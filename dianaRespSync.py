@@ -120,7 +120,8 @@ def main(filename):
 	respSyncList.append(calculateRespSync(worksheet,63))
 	respSyncList.append(calculateRespSync(worksheet,124))
 
-	return accuracyList, respSyncList, blockList
+	return accuracyList, respSyncList, blockList, sequenceList
+
 
 	#counter1 = 2
 	#counter2 = counter1+19
@@ -162,7 +163,6 @@ def saveFile():
 	activeSheet["D1"] = "Sequence Done"
 	activeSheet["E1"] = "Accuracy %"
 	activeSheet["F1"] = "Resp Sync"
-	workbookSaveData.save('trialSave')
 
 	studyGroups = ["C", "E"]
 	controlID = [1, 3, 4, 6, 12, 13, 16, 17]
@@ -176,51 +176,90 @@ def saveFile():
 
 			for ID in controlID: 
 				individualCounter = 0
-				name1 = fileName(group, controlID, 1)
-				main(name1)
-				coordinateMake(group, rowCounter)
-				rowCounter = rowCounter+1
-				activeSheet[coordinateGroup] = group
-				activeSheet[coordinateID] = ID
-				activeSheet[coordinateBlock] = blockList[individualCounter]
-				activeSheet[coordinateSeq] = sequenceList[individualCounter]
-				activeSheet[coordinateAccuracy] = accuracyList[individualCounter]
-				individualCounter = individualCounter +=1 
+				name1 = fileName(group, ID, 1)
+				data = main(name1)
+				counterTwo = 0 
+				
+				while counterTwo < 4:
 
-				name2 = fileName(group, controlID, 2)
-				individualCounter = 0
-				main(name2)
-				coordinateMake(group, rowCounter)
-				rowCounter = rowCounter+1
-				activeSheet[coordinateGroup] = group
-				activeSheet[coordinateID] = ID
-				activeSheet[coordinateBlock] = blockList[individualCounter]
-				activeSheet[coordinateSeq] = sequenceList[individualCounter]
-				activeSheet[coordinateAccuracy] = accuracyList[individualCounter]
-				individualCounter = individualCounter +=1 
-		
+					while individualCounter < 6: 
+						index = coordinateMake(group, rowCounter)
+						rowCounter = rowCounter+1
+
+						activeSheet[index[0]] = group
+						activeSheet[index[1]] = ID
+						activeSheet[index[2]] = data[2][counterTwo]
+						activeSheet[index[3]] = data[3][counterTwo]
+						activeSheet[index[4]] = data[0][counterTwo][individualCounter]
+						activeSheet[index[5]] = data[1][counterTwo][individualCounter]
+						individualCounter = individualCounter +1
+				
+					counterTwo +=1
+
+				name2 = fileName(group, ID, 2)
+				individualCounter = 0 
+				counterTwo = 0 
+				data = main(name2)
+				
+				while counterTwo < 4:
+
+					while individualCounter < 6: 
+						index = coordinateMake(group, rowCounter)
+						rowCounter = rowCounter+1
+
+						activeSheet[index[0]] = group
+						activeSheet[index[1]] = ID
+						activeSheet[index[2]] = data[2][counterTwo]
+						activeSheet[index[3]] = data[3][counterTwo]
+						activeSheet[index[4]] = data[0][counterTwo][individualCounter]
+						activeSheet[index[5]] = data[1][counterTwo][individualCounter]
+						individualCounter = individualCounter +1
+					
+					counterTwo +=1
 		else: 
 
 			for ID in stutterID: 
-				name1 = fileName(group, stutterID, 1)
-				main(name1)
-				coordinateMake(group, rowCounter)
-				rowCounter = rowCounter+1
-				activeSheet[coordinateGroup] = group
-				activeSheet[coordinateID] = ID
-				activeSheet[coordinateBlock] = blockList[individualCounter]
-				activeSheet[coordinateSeq] = sequenceList[individualCounter]
-				activeSheet[coordinateAccuracy] = accuracyList[individualCounter]
-				individualCounter = individualCounter +=1
+				name1 = fileName(group, ID, 1)
+				individualCounter = 0
+				counterTwo = 0 
+				data = main(name1) #acc, resp, block, seq
+				while counterTwo < 4:
 
-				name2 = fileName(group, stutterID, 2)	
-				main(name2)
-				coordinateMake(group, rowCounter)
-				rowCounter = rowCounter+1
-				activeSheet[coordinateGroup] = group
-				activeSheet[coordinateID] = ID
-				activeSheet[coordinateBlock] = blockList[individualCounter]
-				activeSheet[coordinateSeq] = sequenceList[individualCounter]
-				activeSheet[coordinateAccuracy] = accuracyList[individualCounter]
-				individualCounter = individualCounter +=1 
+					while individualCounter < 6: 
+						index = coordinateMake(group, rowCounter)
+						rowCounter = rowCounter+1
 
+						activeSheet[index[0]] = group
+						activeSheet[index[1]] = ID
+						activeSheet[index[2]] = data[2][counterTwo]
+						activeSheet[index[3]] = data[3][counterTwo]
+						activeSheet[index[4]] = data[0][counterTwo][individualCounter]
+						activeSheet[index[5]] = data[1][counterTwo][individualCounter]
+						individualCounter = individualCounter +1
+					
+					print counterTwo
+					counterTwo +=1
+
+
+				name2 = fileName(group, ID, 2)	
+				individualCounter = 0
+				counterTwo = 0
+				data = main(name2)
+				while counterTwo < 4:
+
+					while individualCounter < 6: 
+						index = coordinateMake(group, rowCounter)
+						rowCounter = rowCounter+1
+
+						activeSheet[index[0]] = group
+						activeSheet[index[1]] = ID
+						activeSheet[index[2]] = data[2][counterTwo]
+						activeSheet[index[3]] = data[3][counterTwo]
+						activeSheet[index[4]] = data[0][counterTwo][individualCounter]
+						activeSheet[index[5]] = data[1][counterTwo][individualCounter]
+						individualCounter = individualCounter +1
+					
+					counterTwo +=1
+	workbookSaveData.save('trialSave.xlsx')
+
+saveFile()
